@@ -21,8 +21,8 @@ get_Nth_list([H|T], N , [H1|T1]):-
 set_min_func([],_,_,_).		
 set_min_func(_,NMax,NMax,_).	
 set_min_func([H|T],N,NMax,Horario):-
-	get_Nth_list(Horario,N,Nelem)
-	sum(Nelem,#=,H),
+	get_Nth_list(Horario,N,Nelem),
+	sum(Nelem,#>=,H),
 	N1 is N+1,
 	set_min_func(T,N1,NMax,Horario).
 

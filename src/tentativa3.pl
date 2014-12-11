@@ -12,6 +12,25 @@ horario_func([H|T]):-
 		 Sum #= 3 #\/ Sum #= 4 #\/ Sum #= 0,
 	horario_func(T).
 
+validate_func([],N,N).
+validate_func(L,P,N):-
+        P1 is P + 1,
+        element(P,L,E),
+        element(P1,L,E1),
+        E #= E1,
+        validate_func(L,P1,N).
+
+        
+validate_horario([]).
+validate_horario([H|T],N):-
+        validate_func(H,1,N),
+        validate_horario(T,N).
+
+        
+        
+        
+    
+
 
 get_Nth_list([],_, []).
 get_Nth_list([H|T], N , [H1|T1]):-
@@ -54,6 +73,8 @@ funcionario(Horario):-
 %	(Parciais/Normais)*100 #< 30,
 	length(Hor,10),
 	horario_func(Hor),
+        length(Vars,N),
+        validate_horario(Hor,N),
 	min_func(Hor,Vars),
 	append(Hor,Horario),
 	labeling([],Horario),

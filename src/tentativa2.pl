@@ -22,7 +22,7 @@ atribuiHorario([H|T],E,D,P,N,[[Hr1,Hr2,Hr3,Hr4,Hr5,Hr6,Hr7,Hr8]	|T1],EF,DF,PF,NF
 
 
 
-funcionario(VarsF):-
+funcionario(TodosF):-
         Extras  #<= 2,
         H1 #> 3,
         H2 #> 2,

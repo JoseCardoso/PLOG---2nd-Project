@@ -13,6 +13,26 @@ horario_func([H|T]):-
 		Sum #= 3 #\/ Sum #= 4 #\/ Sum #= 0,
 	horario_func(T).
 
+
+num_func([],Parcial,Inteiro):- Parcial #= 0, Inteiro#= 0.
+num_func([H|T],Parcial,Inteiro):- 
+	num_func(T,Parcial1,Inteiro1),
+	sum(H,#=,Sum),
+	 ( Sum #<7 #/\ Sum #>0 #/\ (Parcial #= Parcial1 + 1  #/\ Inteiro #= Inteiro1) ) #\/  %funcionario parcial
+	 (Sum #>6  #/\	(Parcial #= Parcial1  #/\ Inteiro #= Inteiro1 + 1)) #\/   %funcionario a tempo Inteiro
+	 			(Parcial #= Parcial1  #/\ Inteiro #= Inteiro1 ). % funcionario vazio
+
+
+dinheiro([],Dinheiro):- Dinheiro #= 0.
+dinheiro([H|T],Dinheiro):-
+	dinheiro(T,Dinheiro1),
+	sum(H,#=,Sum),
+	 ( Sum #<7 #/\ Sum #>0 #/\ (Dinheiro #= (Sum-3)*60 + 3*50 + Dinheiro1) ) #\/  %funcionario parcial  (Sum-3, o Número de horas extra)
+	 (Sum #>5  #/\	Dinheiro #= (Sum-7)*40 + 7*80 + Dinheiro1) #\/   %funcionario a tempo Inteiro (Sum-7, o númeor de horas extra)
+	 			Dinheiro #= Dinheiro1 . % funcionario vazio
+	
+
+
 validate_func([_,_|[]]).
 validate_func([Y,Z,W |[]]):-
          Y#\=0 #\/ Z#\=1 #\/ W#\=0.
@@ -44,13 +64,13 @@ min_func(Horario,Vars):-
 	length(Vars,N),
 	set_min_func(Vars,1,N,Horario).
 	
-count_func_parc().
+%count_func_parc().
 
-count_func_norm([],0).
-count_func_norm([H|T],Normais):-
-        sum(H,>=,Sum),
-        count_func([T],N1),
-        Normais is N1+1).
+%count_func_norm([],0).
+%count_func_norm([H|T],Normais):-
+ %       sum(H,>=,Sum),
+  %      count_func([T],N1),
+   %     Normais is N1+1).
                         
 
 
@@ -65,14 +85,20 @@ wre([H1,H2,H3,H4,H5,H6,H7,H8|T]):-
 
 funcionario(Horario):-
 	Vars = [4,8,2,4,8,6,2,2],
+	domain([Parciais],0,5),
+	domain([Normais],1,10),
+	domain([D],1,100000),
 	(Parciais/Normais)*100 #< 30,
 	length(Hor,10),
 	horario_func(Hor),
         length(Vars,N),
         validate_horario(Hor,N),
 	min_func(Hor,Vars),
+	num_func(Hor,Parciais,Normais),
+	dinheiro(Hor,Dinheiro),
+	D #= Dinheiro,
 	append(Hor,Horario),
-	labeling([],Horario),
+	labeling([minimize(D)],Horario),
 	wre(Horario).
 		
    

@@ -67,10 +67,10 @@ min_func(Horario,Vars):-
 	length(Vars,N),
 	set_min_func(Vars,1,N,Horario).
                         
-wre([]).
-wre([H1,H2,H3,H4,H5,H6,H7,H8|T]):-
+escrever([]).
+escrever([H1,H2,H3,H4,H5,H6,H7,H8|T]):-
 	write(H1),write(H2),write(H3),write(H4),write(H5),write(H6),write(H7),write(H8),nl,
-	wre(T).	
+	escrever(T).	
 
 
 funcionario(Horario,Vars,MaxParc,MaxNorm,MaxExtra,MaxCost):-
@@ -91,5 +91,5 @@ funcionario(Horario,Vars,MaxParc,MaxNorm,MaxExtra,MaxCost):-
 	append(Hor,Horario),
 	labeling([minimize(Dinheiro)],Horario),
         write(Dinheiro),
-	wre(Horario).
+	escrever(Horario).
 		

@@ -1,13 +1,13 @@
 :-use_module(library(clpfd)).
 :-use_module(library(lists)).
 
-horario_func([]).
-horario_func([H|T]):-
-	H = [H1,H2,H3,H4,H5,H6,H7,H8],
+horario_func([],_).
+horario_func([H|T],N):-
+	length(H,N),
 	domain(H,0,1),
 	sum(H,#=,Sum),
-        element(4,H,X),
-        element(5,H,Y),
+    element(4,H,X),% o trabalhador trabalha 4 ou 5 horas e depois tem um intervalo
+    element(5,H,Y),
 	(Sum #= 7 #/\ (X #\= Y)) #\/
 		Sum #= 8 #\/ 
 		Sum #= 3 #\/ Sum #= 4 #\/ Sum #= 0,
@@ -72,17 +72,18 @@ wre([H1,H2,H3,H4,H5,H6,H7,H8|T]):-
 	write(H1),write(H2),write(H3),write(H4),write(H5),write(H6),write(H7),write(H8),nl,
 	wre(T).	
 
-funcionario(Horario):-
-	Vars = [4,8,2,4,8,6,2,2],
-	domain([Parciais],0,5),
-	domain([Normais],1,10),
-        domain([Extras],0,2),
-	domain([Dinheiro],1,10000),
+
+funcionario(Horario,Vars,MaxParc,MaxNorm,MaxExtra,MaxCost):-
+	MaxFunc is MaxParc + MaxNorm + 10, % +10 espaço de reserva
+    length(Vars,N),
+	domain([Parciais],0,MaxParc),
+	domain([Normais],1,MaxNorm),
+    domain([Extras],0,MaxExtra),
+	domain([Dinheiro],1,MaxCost),
 	(Parciais/Normais)*100 #< 30,
-	length(Hor,10),
-	horario_func(Hor),
-        length(Vars,N),
-        validate_horario(Hor,N),
+	length(Hor,MaxFunc),
+	horario_func(Hor,N),
+    validate_horario(Hor,N),
 	min_func(Hor,Vars),
 	num_func(Hor,Parciais,Normais),
         num_extras(Hor,Extras),

@@ -1,177 +1,94 @@
 :-use_module(library(clpfd)).
+:-use_module(library(lists)).
 
+horario_func([]).
+horario_func([H|T]):-
+	H = [H1,H2,H3,H4,H5,H6,H7,H8],
+	domain(H,0,1),
+	sum(H,#=,Sum),
+        element(4,H,X),
+        element(5,H,Y),
+	(Sum #= 7 #/\ (X #\= Y)) #\/
+		Sum #= 8 #\/ 
+		Sum #= 3 #\/ Sum #= 4 #\/ Sum #= 0,
+	horario_func(T).
 
-func(Horario,Salario):- Salario  #<= 7*80, Horario #<= 7.
+num_func([],Parcial,Inteiro):- Parcial #= 0, Inteiro#= 0.
+num_func([H|T],Parcial,Inteiro):- 
+	num_func(T,Parcial1,Inteiro1),
+	sum(H,#=,Sum),
+	 ( Sum #<7 #/\ Sum #>0 #/\ (Parcial #= Parcial1 + 1  #/\ Inteiro #= Inteiro1) ) #\/  %funcionario parcial
+	 (Sum #>6  #/\	(Parcial #= Parcial1  #/\ Inteiro #= Inteiro1 + 1)) #\/   %funcionario a tempo Inteiro
+	 			(Parcial #= Parcial1  #/\ Inteiro #= Inteiro1 ). % funcionario vazio
 
-horario_func([0,0,0,0,0,0,0,0]).
-
-%adic_func(Vars,Func em Extra,Dinheiro a gastar ,func Parciais  , func Normais,
-%Vars de Retorno,Extra de Retorno,Dinheiro e Retorno,Parciais de Retornom Normais de Retorno):-
-
-%adicina um funcionário normal
-adic_func(Vars,E,D,P,N,Vars1,E,D1,P,N1):-
-        adic_func_normal(Vars,Vars1), 
-        D1 is D + 7*80,
-        N1 is N + 1.
-
-%adicina um funcionário normal com hora extra
-adic_func(Vars,E,D,P,N,Vars1,E1,D1,P,N1):-
-        adic_func_normal_extra(Vars,Vars1), 
-        N1 is N + 1,
-        E1 is E + 1,
-        D1 is D + 7*80 + 40.
-        
-%adiciona um funcionário parcial
-adic_func(Vars,E,D,P,N,Vars1,E,D1,P1,N):-
-        adic_func_parcial(Vars,Vars1), 
-        P1 is P + 1,
-        D1 is D + 3*50.
-
-adic_func(Vars,E,D,P,N,Vars1,E1,D1,P1,N):-
-        adic_func_parcial_extra(Vars,Vars1), 
-        P1 is P + 1,
-        E1 is E + 1,
-        D1 is D + 3*50 + 60.
-
-
-%funcionário parcial nas primeira 3 horas
-adic_func_parcial([H1,H2,H3,H4,H5,H6,H7,H8],V1):-
-       H1R is H1 + 1,
-       H2R is H2 + 1,
-       H3R is H3 + 1,
-       V1 = [H1R,H2R,H3R,H4,H5,H6,H7,H8].
-
-
-adic_func_parcial([H1,H2,H3,H4,H5,H6,H7,H8],V1):-
-       H2R is H2 + 1,
-       H3R is H3 + 1,
-       H4R is H4 + 1,
-       V1 = [H1,H2R,H3R,H4R,H5,H6,H7,H8].
-
-adic_func_parcial([H1,H2,H3,H4,H5,H6,H7,H8],V1):-
-       H3R is H3 + 1,
-       H4R is H4 + 1,
-       H5R is H5 + 1,
-       V1 = [H1,H2,H3R,H4R,H5R,H6,H7,H8].
-
-adic_func_parcial([H1,H2,H3,H4,H5,H6,H7,H8],V1):-
-       H4R is H4 + 1,
-       H5R is H5 + 1,
-       H6R is H6 + 1,
-       V1 = [H1,H2,H3,H4R,H5R,H6R,H7,H8].
-
-adic_func_parcial([H1,H2,H3,H4,H5,H6,H7,H8],V1):-
-       H5R is H5 + 1,
-       H6R is H6 + 1,
-       H7R is H7 + 1,
-       V1 = [H1,H2,H3,H4,H5R,H6R,H7R,H8].
-
-adic_func_parcial([H1,H2,H3,H4,H5,H6,H7,H8],V1):-
-       H6R is H6 + 1,
-       H7R is H7 + 1,
-       H8R is H8 + 1,
-       V1 = [H1,H2,H3,H4,H5,H6R,H7R,H8R].
-
-
-
-adic_func_parcial_extra([H1,H2,H3,H4,H5,H6,H7,H8],V1):-
-       H1R is H1 + 1,
-       H2R is H2 + 1,
-       H3R is H3 + 1,
-       H4R is H4 + 1,
-       V1 = [H1R,H2R,H3R,H4R,H5,H6,H7,H8].
-
-adic_func_parcial_extra([H1,H2,H3,H4,H5,H6,H7,H8],V1):-
-       H2R is H2 + 1,
-       H3R is H3 + 1,
-       H4R is H4 + 1,
-       H5R is H5 + 1,
-       V1 = [H1,H2R,H3R,H4R,H5R,H6,H7,H8].
-
-adic_func_parcial_extra([H1,H2,H3,H4,H5,H6,H7,H8],V1):-
-       H3R is H3 + 1,
-       H4R is H4 + 1,
-       H5R is H5 + 1,
-       H6R is H6 + 1,
-       V1 = [H1,H2,H3R,H4R,H5R,H6R,H7,H8].
-
-adic_func_parcial_extra([H1,H2,H3,H4,H5,H6,H7,H8],V1):-        
-       H4R is H4 + 1,
-       H5R is H5 + 1,
-       H6R is H6 + 1,
-       H7R is H7 + 1,
-       V1 = [H1,H2,H3,H4R,H5R,H6R,H7R,H8].
-
-adic_func_parcial_extra([H1,H2,H3,H4,H5,H6,H7,H8],V1):-
-       H5R is H5 + 1,
-       H6R is H6 + 1,
-       H7R is H7 + 1,
-       H8R is H8 + 1,
-       V1 = [H1,H2,H3,H4,H5R,H6R,H7R,H8R].
-
-
-%adicionar funcionários normais
-adic_func_normal([H1,H2,H3,H4,H5,H6,H7,H8],V1):-
-       H1R is H1 + 1,
-       H2R is H2 + 1,
-       H3R is H3 + 1,
-       H5R is H5 + 1,
-       H6R is H6 + 1,
-       H7R is H7 + 1,
-       H8R is H8 + 1,
-       V1 = [H1R,H2R,H3R,H4,H5R,H6R,H7R,H8R].
-
-adic_func_normal([H1,H2,H3,H4,H5,H6,H7,H8],V1):-
-       H1R is H1 + 1,
-       H2R is H2 + 1,
-       H3R is H3 + 1,
-       H4R is H4 + 1,
-       H6R is H6 + 1,
-       H7R is H7 + 1,
-       H8R is H8 + 1,
-       V1 = [H1R,H2R,H3R,H4R,H5,H6R,H7R,H8R].
-       
-       
-adic_func_normal_extra([H1,H2,H3,H4,H5,H6,H7,H8],V1):-
-       H1R is H1 + 1,
-       H2R is H2 + 1,
-       H3R is H3 + 1,
-       H4R is H4 + 1,
-       H5R is H5 + 1,
-       H6R is H6 + 1,
-       H7R is H7 + 1,
-       H8R is H8 + 1,
-       V1 = [H1R,H2R,H3R,H4R,H5R,H6R,H7R,H8R].
-
-
-
-
-dist_func(Vars):-
-       % Extras  #<= 2,
-       % Dinheiro,
-        Vars=[H1,H2,H3,H4,H5,H6,H7,H8],
-        H1 #> 3,
-        H2 #> 2,
-        H3 #> 2,
-        H4 #> 5,
-        H5 #> 4,
-        H6 #> 5,
-        H7 #> 7,
-        H8 #> 7,
-        H1 + H2 + H3 + H4 + H5 + H6 + H7 + H8 #= 50,
-       % Parciais #< 6,
-       % Parciais #<= 0.3 * Normais,
-        labeling([],Vars).
+num_extras([],Extras):-Extras #=0.
+num_extras([H|T],Extras):-
+        num_extras(T,Extras1),
+        sum(H,#=,Sum),
+        ((Sum#=8 #\/ Sum#=4) #/\ Extras #= Extras1 + 1) #\/ Extras #= Extras1.
         
 
+dinheiro([],Dinheiro):- Dinheiro #= 0.
+dinheiro([H|T],Dinheiro):-
+	dinheiro(T,Dinheiro1),
+	sum(H,#=,Sum),
+	((Sum #< 7 #/\Sum#>0) #/\ Dinheiro #= (Sum-3)*60 + 3*50 + Dinheiro1) #\/  %funcionario parcial  (Sum-3, o NÃºmero de horas extra)
+	((Sum #> 6) #/\	Dinheiro #= (Sum-7)*40 + 7*80 + Dinheiro1) #\/   %funcionario a tempo Inteiro (Sum-7, o nÃºmeor de horas extra)
+        ((Sum #= 0) #/\ Dinheiro1 #= Dinheiro).
 
+validate_func([_,_|[]]).
+validate_func([Y,Z,W |[]]):-
+         Y#\=0 #\/ Z#\=1 #\/ W#\=0.
+validate_func([X,Y,Z,W|T]):-
+         (X#\=0 #\/ Y#\=1 #\/ Z#\=0) #/\ 
+         (X#\=1 #\/ Y#\=0 #\/ Z#\=0 #\/ W#\= 1) #/\
+         (X#\=0 #\/ Y#\=1 #\/ Z#\=1 #\/ W#\=0),
+         validate_func([Y,Z,W|T]).
+         
+validate_horario([],_).
+validate_horario([H|T],N):-
+        validate_func(H),
+        validate_horario(T,N).
 
+get_Nth_list([],_,_).
+get_Nth_list([H|T], N , [H1|T1]):-
+	element(N,H,H1),
+	get_Nth_list(T,N,T1).
 
+set_min_func([],_,_,_).		
+set_min_func([],NMax,NMax,_).	
+set_min_func([H|T],N,NMax,Horario):-
+	get_Nth_list(Horario,N,Nelem),
+	sum(Nelem,#>=,H),
+	N1 is N+1,
+	set_min_func(T,N1,NMax,Horario).
 
+min_func(Horario,Vars):-
+	length(Vars,N),
+	set_min_func(Vars,1,N,Horario).
+                        
+wre([]).
+wre([H1,H2,H3,H4,H5,H6,H7,H8|T]):-
+	write(H1),write(H2),write(H3),write(H4),write(H5),write(H6),write(H7),write(H8),nl,
+	wre(T).	
 
-
-
-
-
-
-
+funcionario(Horario):-
+	Vars = [4,8,2,4,8,6,2,2],
+	domain([Parciais],0,5),
+	domain([Normais],1,10),
+        domain([Extras],0,2),
+	domain([Dinheiro],1,10000),
+	(Parciais/Normais)*100 #< 30,
+	length(Hor,10),
+	horario_func(Hor),
+        length(Vars,N),
+        validate_horario(Hor,N),
+	min_func(Hor,Vars),
+	num_func(Hor,Parciais,Normais),
+        num_extras(Hor,Extras),
+	dinheiro(Hor,Dinheiro),
+	append(Hor,Horario),
+	labeling([minimize(Dinheiro)],Horario),
+        write(Dinheiro),
+	wre(Horario).
+		

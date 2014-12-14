@@ -73,20 +73,19 @@ escrever([H1,H2,H3,H4,H5,H6,H7,H8|T]):-
 	write(H1),write(H2),write(H3),write(H4),write(H5),write(H6),write(H7),write(H8),nl,
 	escrever(T).	
 
-funcionario(Vars,MaxParc,MaxNorm,MaxExtra,MaxCost,Horario):-        
-	MaxFunc is MaxParc + MaxNorm+10, % +10 espaço de reserva
-        length(Vars,N),
-	domain([Parciais],0,MaxParc),
-	domain([Normais],1,MaxNorm),
-        domain([Extras],0,MaxExtra),
+funcionario(Vars,MaxFunc,MaxExtra,MaxCost,Horario):-        
+	(Parciais*100 #=< 30*Normais) #/\ (Parcias + Normais #= MaxFunc), % +10 espaço de reserva
+    length(Vars,N),
+	domain([Parciais],0,MaxFunc),
+	domain([Normais],1,MaxFunc),
+    domain([Extras],0,MaxExtra),
 	domain([Dinheiro],1,MaxCost),
-	Parciais*100 #=< 30*Normais,
 	length(Hor,MaxFunc),
 	horario_func(Hor,N),
-        validate_horario(Hor,N),
+    validate_horario(Hor,N),
 	min_func(Hor,Vars),
 	num_func(Hor,Parciais,Normais),
-        num_extras(Hor,Extras),
+    num_extras(Hor,Extras),
 	dinheiro(Hor,Dinheiro),
 	append(Hor,Horario),
 	labeling([minimize(Dinheiro),time_out(6000,A)],Horario),

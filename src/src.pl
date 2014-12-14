@@ -74,7 +74,7 @@ escrever([H1,H2,H3,H4,H5,H6,H7,H8|T]):-
 	escrever(T).	
 
 funcionario(Vars,MaxFunc,MaxExtra,MaxCost,Horario):-        
-	(Parciais*100 #=< 30*Normais) #/\ (Parcias + Normais #= MaxFunc), % +10 espaço de reserva
+	(Parciais*100 #=< 30*Normais),% #/\ (Parciais + Normais #=< MaxFunc), % +10 espaço de reserva
     length(Vars,N),
 	domain([Parciais],0,MaxFunc),
 	domain([Normais],1,MaxFunc),
@@ -88,8 +88,8 @@ funcionario(Vars,MaxFunc,MaxExtra,MaxCost,Horario):-
     num_extras(Hor,Extras),
 	dinheiro(Hor,Dinheiro),
 	append(Hor,Horario),
-	labeling([minimize(Dinheiro),time_out(6000,A)],Horario),
+	labeling([minimize(Dinheiro),time_out(60000,A)],Horario),
 	escrever(Horario),nl,
-        write(Dinheiro),nl,
-        write(Parciais),nl,write(Normais),nl,write(Extras).
+    write(Dinheiro),nl,
+    write(Parciais),nl,write(Normais),nl,write(Extras).
 		

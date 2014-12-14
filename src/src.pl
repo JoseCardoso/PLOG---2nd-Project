@@ -6,11 +6,11 @@ horario_func([H|T],N):-
 	length(H,N),
 	domain(H,0,1),
 	sum(H,#=,Sum),
-    element(4,H,X),% o trabalhador trabalha 4 ou 5 horas e depois tem um intervalo
-    element(5,H,Y),
-	(Sum #= 7 #/\ (X #\= Y)) #\/
-		Sum #= 8 #\/ 
-		Sum #= 3 #\/ Sum #= 4 #\/ Sum #= 0,
+	Sum #= 7  #\/
+	Sum #= 8 #\/ 
+	Sum #= 3 #\/ 
+        Sum #= 4 #\/ 
+        Sum #= 0,
 	horario_func(T,N).
 
 num_func([],Parcial,Inteiro):- Parcial #= 0, Inteiro#= 0.
@@ -37,18 +37,25 @@ dinheiro([H|T],Dinheiro):-
 	((Sum #> 6) #/\	Dinheiro #= (Sum-7)*40 + 7*80 + Dinheiro1) #\/   %funcionario a tempo Inteiro (Sum-7, o númeor de horas extra)
         ((Sum #= 0) #/\ Dinheiro1 #= Dinheiro).
 
-validate_func([_,_|[]]).
-validate_func([Y,Z,W |[]]):-
+validate_func([_,_|[]],_).
+validate_func([Y,Z,W |[]],_):-
          Y#\=0 #\/ Z#\=1 #\/ W#\=0.
-validate_func([X,Y,Z,W|T]):-
+validate_func([X,Y,Z,W|[]],Sum):-
          (X#\=0 #\/ Y#\=1 #\/ Z#\=0) #/\ 
          (X#\=1 #\/ Y#\=0 #\/ Z#\=0 #\/ W#\= 1) #/\
          (X#\=0 #\/ Y#\=1 #\/ Z#\=1 #\/ W#\=0),
-         validate_func([Y,Z,W|T]).
+         validate_func([Y,Z,W],Sum).
+validate_func([X,Y,Z,W,U|T],Sum):-
+        ((Sum #\=7) #\/ ((X #\= 1) #\/(Y #\= 1) #\/(Z #\= 1) #\/(W #\= 1) #\/(U #\= 1))) #/\
+        (X#\=0 #\/ Y#\=1 #\/ Z#\=0) #/\ 
+        (X#\=1 #\/ Y#\=0 #\/ Z#\=0 #\/ W#\= 1) #/\
+        (X#\=0 #\/ Y#\=1 #\/ Z#\=1 #\/ W#\=0),
+        validate_func([Y,Z,W,U|T],Sum).
          
 validate_horario([],_).
 validate_horario([H|T],N):-
-        validate_func(H),
+        sum(H,#=,Sum),
+        validate_func(H,Sum),
         validate_horario(T,N).
 
 get_Nth_list([],_,_).
@@ -69,27 +76,33 @@ min_func(Horario,Vars):-
 	set_min_func(Vars,1,N,Horario).
                         
 escrever([]).
-escrever([H1,H2,H3,H4,H5,H6,H7,H8|T]):-
-	write(H1),write(H2),write(H3),write(H4),write(H5),write(H6),write(H7),write(H8),nl,
-	escrever(T).	
+escrever([X|T]):-
+        write(X), write('  ') , escrever(T).
+        
+escreverHorario([]).
+escreverHorario([H|T]):-
+        escrever(H),nl,nl,escreverHorario(T).	
 
 funcionario(Vars,MaxFunc,MaxExtra,MaxCost,Horario):-        
 	(Parciais*100 #=< 30*Normais),% #/\ (Parciais + Normais #=< MaxFunc), % +10 espaço de reserva
-    length(Vars,N),
+        length(Vars,N),
 	domain([Parciais],0,MaxFunc),
 	domain([Normais],1,MaxFunc),
-    domain([Extras],0,MaxExtra),
+        domain([Extras],0,MaxExtra),
 	domain([Dinheiro],1,MaxCost),
 	length(Hor,MaxFunc),
 	horario_func(Hor,N),
-    validate_horario(Hor,N),
+        validate_horario(Hor,N),
 	min_func(Hor,Vars),
 	num_func(Hor,Parciais,Normais),
-    num_extras(Hor,Extras),
+        num_extras(Hor,Extras),
 	dinheiro(Hor,Dinheiro),
 	append(Hor,Horario),
-	labeling([minimize(Dinheiro),time_out(60000,A)],Horario),
-	escrever(Horario),nl,
-    write(Dinheiro),nl,
-    write(Parciais),nl,write(Normais),nl,write(Extras).
+	labeling([minimize(Dinheiro),time_out(60000,_)],Horario),
+        escreverHorario(Hor),nl,nl,
+        escrever(Vars),nl,
+        write('Cost: '),write(Dinheiro),nl,
+        write('Number of Part-time workers: '), write(Parciais),nl,
+        write('Number of Full-time workers: '), write(Normais),nl,
+        write('Number of workers doing extra hours: '),write(Extras).
 		

@@ -83,10 +83,10 @@ escreverHorario([]).
 escreverHorario([H|T]):-
         escrever(H),nl,nl,escreverHorario(T).	
 
-funcionario(Vars,MaxFunc,MaxExtra,MaxCost,Horario):-        
+funcionario(Vars,MaxFunc,MaxPart,MaxExtra,MaxCost,Horario):-        
 	(Parciais*100 #=< 30*Normais),% #/\ (Parciais + Normais #=< MaxFunc), % +10 espaço de reserva
         length(Vars,N),
-	domain([Parciais],0,MaxFunc),
+	domain([Parciais],0,MaxPart),
 	domain([Normais],1,MaxFunc),
         domain([Extras],0,MaxExtra),
 	domain([Dinheiro],1,MaxCost),
